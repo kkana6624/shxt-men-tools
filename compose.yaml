@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:latest
+    # ルートレスコンテナとして実行するためユーザを指定します。
+    # ※ホスト側で予め `mkdir pgdata` 等を作成しておかないと、
+    # 　Dockerデーモンがroot権限でディレクトリを作成してしまう点に注意してください。
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: "${UID:-1000}"
+        GID: "${GID:-1000}"
+    # アプリ側もホストと同じUID/GIDで動作させることでローカルのファイル編集が容易になります。
+    user: "${UID:-1000}:${GID:-1000}"
+    ports:
+      - "4000:4000"
+    volumes:
+      # ソースコードの編集が反映されるようにローカルを作業ディレクトリにマウント
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - USER=developer
+      - DATABASE_URL=ecto://postgres:postgres@db/app_dev
+    # ※本コンテナは常駐(sleep)する設定になっています。
+    # コマンド例: docker compose exec app bash で内部に入り、
+    # mix phx.new . などの開発コマンドを実行します。
+    # 既存の環境があれば command: を mix phx.server にオーバーライドすることも可能です。

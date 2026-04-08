@@ -1,0 +1,37 @@
+# The directory Mix will write compiled artifacts to.
+_build/
+
+# The directory Mix downloads your dependencies payload to.
+deps/
+
+# Database data
+pgdata/
+
+# Git folder
+.git/
+
+# Node (if used in future)
+node_modules/
+assets/node_modules/
+assets/build/
+
+# Hex paths
+/.hex/
+/.rebar/
+
+# Crash reports and logs
+erl_crash.dump
+*.ez
+*.beam
+*.log
+
+# IDEs
+.idea/
+.vscode/
+
+# Static assets compiled
+priv/static/
+
+# Gleam
+build/
+.gleam/
