@@ -4,8 +4,6 @@ _build/
 # The directory Mix downloads your dependencies payload to.
 deps/
 
-# Database data
-pgdata/
 
 # Git folder
 .git/

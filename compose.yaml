@@ -1,18 +1,10 @@
 services:
   db:
     image: postgres:latest
-    # ルートレスコンテナとして実行するためユーザを指定します。
-    # ※ホスト側で予め `mkdir pgdata` 等を作成しておかないと、
-    # 　Dockerデーモンがroot権限でディレクトリを作成してしまう点に注意してください。
-    user: "${UID:-1000}:${GID:-1000}"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: app_dev
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d app_dev"]
       interval: 5s

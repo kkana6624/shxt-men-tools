@@ -12,13 +12,14 @@ RUN apt-get update && apt-get install -y \
 # アーキテクチャに合わせて最新のGleamをインストール
 RUN ARCH=$(uname -m) && \
     if [ "$ARCH" = "x86_64" ]; then \
-      GLEAM_TAR="gleam-x86_64-unknown-linux-musl.tar.gz"; \
+      TARGET="x86_64-unknown-linux-musl"; \
     elif [ "$ARCH" = "aarch64" ]; then \
-      GLEAM_TAR="gleam-aarch64-unknown-linux-musl.tar.gz"; \
+      TARGET="aarch64-unknown-linux-musl"; \
     else \
       echo "Unsupported architecture: $ARCH" && exit 1; \
     fi && \
-    curl -fL -o gleam.tar.gz "https://github.com/gleam-lang/gleam/releases/latest/download/$GLEAM_TAR" && \
+    LATEST_VERSION=$(curl -sI https://github.com/gleam-lang/gleam/releases/latest | grep -i location | awk -F '/' '{print $NF}' | tr -d '\r') && \
+    curl -fL -o gleam.tar.gz "https://github.com/gleam-lang/gleam/releases/download/${LATEST_VERSION}/gleam-${LATEST_VERSION}-${TARGET}.tar.gz" && \
     tar -xzf gleam.tar.gz && \
     mv gleam /usr/local/bin/ && \
     rm gleam.tar.gz
