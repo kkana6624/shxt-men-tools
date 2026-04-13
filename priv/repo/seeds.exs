@@ -9,3 +9,10 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias ShxtMenTools.Accounts
+
+Accounts.register_user(%{
+  email: "administrator@example.com",
+  password: "P@sswordAD01"
+})
