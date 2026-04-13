@@ -1,18 +1,25 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     ShxtMenTools.Repo.insert!(%ShxtMenTools.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
-
 alias ShxtMenTools.Accounts
+alias ShxtMenTools.Repo
+alias ShxtMenTools.Accounts.User
 
-Accounts.register_user(%{
-  email: "administrator@example.com",
-  password: "P@sswordAD01"
-})
+# Admin creation
+admin_email = "administrator@example.com"
+unless Repo.get_by(User, email: admin_email) do
+  Accounts.register_user(%{
+    email: admin_email,
+    password: "P@sswordAD01",
+    role: "admin"
+  })
+end
+
+# Initial user accounts creation
+Enum.each(1..3, fn i ->
+  email = "user#{i}@example.com"
+  unless Repo.get_by(User, email: email) do
+    Accounts.invite_user(%{
+      email: email,
+      password: "P@sswordUSR0#{i}",
+      role: "user"
+    })
+  end
+end)

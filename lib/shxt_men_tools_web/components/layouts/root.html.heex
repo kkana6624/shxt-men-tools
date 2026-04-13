@@ -36,6 +36,11 @@
         <li>
           {@current_scope.user.email}
         </li>
+        <%= if @current_scope.admin? do %>
+          <li>
+            <.link href={~p"/users/invite"}>Invite User</.link>
+          </li>
+        <% end %>
         <li>
           <.link href={~p"/users/settings"}>Settings</.link>
         </li>

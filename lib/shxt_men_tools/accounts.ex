@@ -80,6 +80,25 @@ defmodule ShxtMenTools.Accounts do
     |> Repo.insert()
   end
 
+  @doc """
+  Invites a user.
+
+  The user is immediately confirmed.
+  """
+  def invite_user(attrs) do
+    %User{}
+    |> User.invitation_changeset(attrs)
+    |> Ecto.Changeset.put_change(:confirmed_at, DateTime.utc_now() |> DateTime.truncate(:second))
+    |> Repo.insert()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for inviting a user.
+  """
+  def change_user_invitation(%User{} = user, attrs \\ %{}, opts \\ []) do
+    User.invitation_changeset(user, attrs, opts)
+  end
+
   ## Settings
 
   @doc """
