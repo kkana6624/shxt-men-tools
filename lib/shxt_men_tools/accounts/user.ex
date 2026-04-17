@@ -9,6 +9,8 @@ defmodule ShxtMenTools.Accounts.User do
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
 
+    field :role, :string
+
     timestamps(type: :utc_datetime)
   end
 
@@ -36,9 +38,23 @@ defmodule ShxtMenTools.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :role])
     |> validate_email(opts)
     |> validate_password(opts)
+  end
+
+  @doc """
+  A user changeset for invitation.
+
+  It specifies that the email, password and role are required.
+  """
+  def invitation_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email, :password, :role])
+    |> validate_email(opts)
+    |> validate_password(opts)
+    |> validate_required([:role])
+    |> validate_inclusion(:role, ["admin", "user"])
   end
 
   defp validate_email(changeset, opts) do

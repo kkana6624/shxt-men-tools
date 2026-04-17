@@ -18,15 +18,15 @@ defmodule ShxtMenTools.Accounts.Scope do
 
   alias ShxtMenTools.Accounts.User
 
-  defstruct user: nil
+  defstruct user: nil, admin?: false
 
   @doc """
   Creates a scope for the given user.
 
   Returns nil if no user is given.
   """
-  def for_user(%User{} = user) do
-    %__MODULE__{user: user}
+  def for_user(%User{role: role} = user) do
+    %__MODULE__{user: user, admin?: role == "admin"}
   end
 
   def for_user(nil), do: nil
